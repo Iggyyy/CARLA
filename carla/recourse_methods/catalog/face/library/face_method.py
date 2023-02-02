@@ -20,6 +20,7 @@ def graph_search(
     mode="knn",
     frac=0.4,
     radius=0.25,
+    factual_class=None
 ):
     # This one implements the FACE method from
     # Rafael Poyiadzi et al (2020), "FACE: Feasible and Actionable Counterfactual Explanations",
@@ -50,7 +51,9 @@ def graph_search(
     # POSITIVE PREDICTIONS
     y_predicted = model.predict_proba(data.values)
     y_predicted = np.argmax(y_predicted, axis=1)
-    y_positive_indeces = np.where(y_predicted == 1)
+    #y_positive_indeces = np.where(y_predicted == 1)
+    # Originally always 1 but this is wrong. Factual can be of class either 0 or 1. Counterfactual should be then 1 - factual_class
+    y_positive_indeces = np.where(y_predicted == 1 - factual_class)
 
     if mode == "knn":
         boundary = 3  # chosen in ad-hoc fashion
@@ -128,7 +131,7 @@ def choose_random_subset(data, frac, index):
     -------
     pd.DataFrame
     """
-    number_samples = np.int(np.rint(frac * data.values.shape[0]))
+    number_samples = np.rint(frac * data.values.shape[0]).astype('int')
     list_to_choose = (
         np.arange(0, index).tolist()
         + np.arange(index + 1, data.values.shape[0]).tolist()

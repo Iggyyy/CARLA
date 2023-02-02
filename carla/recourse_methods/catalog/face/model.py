@@ -1,6 +1,7 @@
 from typing import Dict, Optional
 
 import pandas as pd
+import numpy as np
 
 from carla.models.api import MLModel
 from carla.recourse_methods.api import RecourseMethod
@@ -112,6 +113,10 @@ class Face(RecourseMethod):
         df = self._mlmodel.get_ordered_features(df)
         factuals = self._mlmodel.get_ordered_features(factuals)
 
+        assert factuals.shape[0] == 1, 'Too many factuals. FACE supports only one factual at a time!'
+        factual_class = np.argmax(self._mlmodel.predict_proba(factuals), axis=1)[0]
+
+
         list_cfs = []
         for i in range(factuals.shape[0]):
             cf = graph_search(
@@ -121,6 +126,7 @@ class Face(RecourseMethod):
                 self._mlmodel,
                 mode=self._mode,
                 frac=self._fraction,
+                factual_class=factual_class,
             )
             list_cfs.append(cf)
 
