@@ -31,13 +31,14 @@ class CsvCatalog(DataCatalog):
 
     def __init__(
         self,
-        file_path: str,
+        #file_path: str,
+        dataset: pd.DataFrame,
         categorical: List[str],
         continuous: List[str],
         immutables: List[str],
         target: str,
         scaling_method: str = "MinMax",
-        encoding_method: str = "OneHot_drop_binary",
+        encoding_method: str = "OneHot",
     ):
         self._categorical = categorical
         self._continuous = continuous
@@ -45,7 +46,8 @@ class CsvCatalog(DataCatalog):
         self._target = target
 
         # Load the raw data
-        raw = pd.read_csv(file_path)
+        #raw = pd.read_csv(file_path)
+        raw = dataset
         train_raw, test_raw = train_test_split(raw)
 
         super().__init__(

@@ -45,7 +45,7 @@ def check_counterfactuals(
 
     df_cfs[mlmodel.data.target] = np.argmax(mlmodel.predict_proba(df_cfs), axis=1)
     # Change all wrong counterfactuals to nan
-    df_cfs.loc[df_cfs[mlmodel.data.target] == negative_label, :] = np.nan
+    #df_cfs.loc[df_cfs[mlmodel.data.target] == negative_label, :] = np.nan
 
     return df_cfs
 
