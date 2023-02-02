@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 from keras.layers import Dense
 from keras.models import Sequential
-from keras.utils import to_categorical
+from keras.utils.np_utils import to_categorical
 
 
 def weighted_binary_cross_entropy(target, output):

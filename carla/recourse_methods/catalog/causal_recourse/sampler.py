@@ -1,11 +1,12 @@
 import numpy as np
 import pandas as pd
 
-from carla.data.causal_model import CausalModel
+#from carla.data.causal_model import CausalModel
 
 
 class Sampler:
-    def __init__(self, scm: CausalModel):
+    #def __init__(self, scm: CausalModel):
+    def __init__(self, scm):
         self._scm = scm
         self._input_attributes = list(scm.structural_equations_np.keys())
 

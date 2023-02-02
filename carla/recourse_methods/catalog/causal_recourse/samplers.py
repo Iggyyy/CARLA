@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from carla.data.causal_model import CausalModel
+#from carla.data.causal_model import CausalModel
 
 
 def get_noise_string(node):
@@ -20,7 +20,8 @@ def get_abduction_noise(
 
 def sample_true_m0(
     node: str,
-    scm: CausalModel,
+    #scm: CausalModel,
+    scm,
     samples_df: pd.DataFrame,
     factual_instance: dict,
 ):
@@ -39,7 +40,8 @@ def sample_true_m0(
     return node_sample
 
 
-def sample_true_m2(node: str, scm: CausalModel, samples_df: pd.DataFrame):
+#def sample_true_m2(node: str, scm: CausalModel, samples_df: pd.DataFrame):
+def sample_true_m2(node: str, scm, samples_df: pd.DataFrame):
     # Step 1. [abduction]: compute noise or load from dataset using factual_instance
     # Step 2. [action]: (skip) this step is implicitly performed in the populated samples_df columns
     # Step 3. [prediction]: run through structural equation using noise and parents from samples_df
