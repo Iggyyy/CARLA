@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 
-from carla.data.catalog import DataCatalog
-from carla.data.load_catalog import load
+from .catalog import DataCatalog
+from ..load_catalog import load
 
 from .load_data import load_dataset
 
