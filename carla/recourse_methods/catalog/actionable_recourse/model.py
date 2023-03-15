@@ -1,4 +1,5 @@
 from typing import Dict, Optional, Tuple
+import cplex
 
 import numpy as np
 import pandas as pd
@@ -226,7 +227,7 @@ class ActionableRecourse(RecourseMethod):
             )
             try:
                 fs_pop = fs.populate(total_items=self._fs_size)
-            except (ValueError, KeyError):
+            except (ValueError, KeyError, cplex.exceptions.errors.CplexSolverError):
                 log.warning(
                     "Actionable Recourse is not able to produce a counterfactual explanation for instance {}".format(
                         index
