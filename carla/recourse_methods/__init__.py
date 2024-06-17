@@ -8,7 +8,7 @@ from .catalog import (
     FOCUS,
     # ActionableRecourse,
     #CausalRecourse,
-    # Clue,
+    Clue,
     # Dice,
     Face,
     # FeatureTweak,

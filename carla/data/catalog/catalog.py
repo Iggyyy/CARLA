@@ -59,12 +59,12 @@ class DataCatalog(Data, ABC):
         self._df_test = df_test
 
         # Fit scaler and encoder
-        # self.scaler: BaseEstimator = fit_scaler(
-        #     scaling_method, self.df[self.continuous]
-        # )
-        # self.encoder: BaseEstimator = fit_encoder(
-        #     encoding_method, self.df[self.categorical]
-        # )
+        self.scaler: BaseEstimator = fit_scaler(
+            scaling_method, self.df[self.continuous]
+        )
+        self.encoder: BaseEstimator = fit_encoder(
+            encoding_method, self.df[self.categorical]
+        )
         # self._identity_encoding = (
         #     encoding_method is None or encoding_method == "Identity"
         # )
