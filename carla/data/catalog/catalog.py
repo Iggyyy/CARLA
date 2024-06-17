@@ -59,24 +59,24 @@ class DataCatalog(Data, ABC):
         self._df_test = df_test
 
         # Fit scaler and encoder
-        self.scaler: BaseEstimator = fit_scaler(
-            scaling_method, self.df[self.continuous]
-        )
-        self.encoder: BaseEstimator = fit_encoder(
-            encoding_method, self.df[self.categorical]
-        )
-        self._identity_encoding = (
-            encoding_method is None or encoding_method == "Identity"
-        )
+        # self.scaler: BaseEstimator = fit_scaler(
+        #     scaling_method, self.df[self.continuous]
+        # )
+        # self.encoder: BaseEstimator = fit_encoder(
+        #     encoding_method, self.df[self.categorical]
+        # )
+        # self._identity_encoding = (
+        #     encoding_method is None or encoding_method == "Identity"
+        # )
 
         # Preparing pipeline components
-        self._pipeline = self.__init_pipeline()
-        self._inverse_pipeline = self.__init_inverse_pipeline()
+        # self._pipeline = self.__init_pipeline()
+        # self._inverse_pipeline = self.__init_inverse_pipeline()
 
         # Process the data
-        self._df = self.transform(self.df)
-        self._df_train = self.transform(self.df_train)
-        self._df_test = self.transform(self.df_test)
+        self._df = self.df
+        self._df_train = self.df_train
+        self._df_test = self.df_test
 
     @property
     def df(self) -> pd.DataFrame:
