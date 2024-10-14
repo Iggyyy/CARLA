@@ -2,17 +2,17 @@
 
 from .api import RecourseMethod
 from .catalog import (
-    CCHVAE,
+    # CCHVAE,
     CEM,
-    CRUD,
+    # CRUD,
     FOCUS,
-    ActionableRecourse,
+    # ActionableRecourse,
     #CausalRecourse,
     Clue,
-    Dice,
+    # Dice,
     Face,
-    FeatureTweak,
-    GrowingSpheres,
+    # FeatureTweak,
+    # GrowingSpheres,
     Revise,
     Roar,
     Wachter,

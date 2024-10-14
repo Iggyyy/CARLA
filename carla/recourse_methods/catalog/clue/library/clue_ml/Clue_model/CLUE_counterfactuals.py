@@ -282,6 +282,8 @@ class CLUE(BaseNet):
                 preds = mu
             else:
                 probs = self.BNN.predict_proba(to_BNN)
+                # Numpy to tensor
+                probs = torch.from_numpy(probs).type(self.z.type())
                 total_uncertainty = -(probs * torch.log(probs + 1e-10)).sum(
                     dim=1, keepdim=False
                 )

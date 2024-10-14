@@ -43,15 +43,19 @@ def graph_search(
     # ADD CONSTRAINTS by immutable inputs into adjacency matrix
     # if element in adjacency matrix 0, then it cannot be reached
     # this ensures that paths only take same sex / same race / ... etc. routes
-    for i in range(len(keys_immutable)):
-        immutable_constraint_matrix1, immutable_constraint_matrix2 = build_constraints(
-            data, i, keys_immutable
-        )
+    if len(keys_immutable) == 0:
+        immutable_constraint_matrix1 = np.ones((data.values.shape[0], data.values.shape[0]))
+        immutable_constraint_matrix2 = np.ones((data.values.shape[0], data.values.shape[0]))
+    else:
+        for i in range(len(keys_immutable)):
+            immutable_constraint_matrix1, immutable_constraint_matrix2 = build_constraints(
+                data, i, keys_immutable
+            )
 
     # POSITIVE PREDICTIONS
     y_predicted = model.predict_proba(data.values)
     y_predicted = np.argmax(y_predicted, axis=1)
-    #y_positive_indeces = np.where(y_predicted == 1)
+    # y_positive_indeces = np.where(y_predicted == 1)
     # Originally always 1 but this is wrong. Factual can be of class either 0 or 1. Counterfactual should be then 1 - factual_class
     y_positive_indeces = np.where(y_predicted == 1 - factual_class)
 

@@ -140,7 +140,7 @@ class Revise(RecourseMethod):
         factuals = self._mlmodel.get_ordered_features(factuals)
 
         # pay attention to categorical features
-        encoded_feature_names = self._mlmodel.data.encoder.get_feature_names(
+        encoded_feature_names = self._mlmodel.data.encoder.get_feature_names_out(
             self._mlmodel.data.categorical
         )
         cat_features_indices = [
@@ -198,6 +198,8 @@ class Revise(RecourseMethod):
                     cf, cat_features_indices, self._params["binary_cat_features"]
                 )
                 output = self._mlmodel.predict_proba(cf)[0]
+                # np to torch
+                output = torch.FloatTensor(output).to(device)
                 _, predicted = torch.max(output, 0)
 
                 z.requires_grad = True
@@ -232,6 +234,9 @@ class Revise(RecourseMethod):
 
         loss_function = nn.BCELoss()
         output = self._mlmodel.predict_proba(cf_initialize)[0]
+        # numpy to torch
+        output = torch.FloatTensor(output)
+        
 
         # classification loss
         loss1 = loss_function(output, target)
