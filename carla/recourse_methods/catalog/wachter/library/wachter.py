@@ -86,12 +86,19 @@ def wachter_recourse(
 
     if loss_type == "MSE":
         if len(y_target) != 1:
-            raise ValueError(f"y_target {y_target} is not a single logit score")
+            raise ValueError(
+                f"y_target {y_target} is not a single logit score")
 
         # If logit is above 0.0 we want class 1, else class 0
         target_class = int(y_target[0] > 0.0)
         loss_fn = torch.nn.MSELoss()
     elif loss_type == "BCE":
+
+        # If y_target is 1dim make it 2dim
+        if len(y_target) == 1:
+            y_target = torch.tensor(
+                [1 - y_target[0], y_target[0]]).float().to(device)
+
         if y_target[0] + y_target[1] != 1.0:
             raise ValueError(
                 f"y_target {y_target} does not contain 2 valid class probabilities"
@@ -106,7 +113,12 @@ def wachter_recourse(
         raise ValueError(f"loss_type {loss_type} not supported")
 
     # get the probablity of the target class
-    f_x_new = torch_model(x_new)[:, target_class]
+    f_x_new = torch_model(x_new)
+    if f_x_new.dim() == 2:
+        f_x_new = f_x_new[:, target_class]
+    else:
+        if target_class == 0:
+            f_x_new = 1 - f_x_new
 
     t0 = datetime.datetime.now()
     t_max = datetime.timedelta(minutes=t_max_min)
@@ -119,7 +131,12 @@ def wachter_recourse(
             )
             # use x_new_enc for prediction results to ensure constraints
             # get the probablity of the target class
-            f_x_new = torch_model(x_new_enc)[:, target_class]
+            f_x_new = torch_model(x_new_enc)
+            if f_x_new.dim() == 2:
+                f_x_new = f_x_new[:, target_class]
+            else:
+                if target_class == 0:
+                    f_x_new = 1 - f_x_new
 
             if loss_type == "MSE":
                 # single logit score for the target class for MSE loss
@@ -136,7 +153,7 @@ def wachter_recourse(
                 else torch.norm(feature_costs * (x_new_enc - x), norm)
             )
 
-            loss = loss_fn(f_x_loss, y_target) + lamb * cost
+            loss = loss_fn(f_x_loss, target_class.float()) + lamb * cost
             loss.backward()
             optimizer.step()
             # clamp potential CF

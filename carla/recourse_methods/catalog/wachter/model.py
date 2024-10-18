@@ -58,7 +58,7 @@ class Wachter(RecourseMethod):
     """
 
     _DEFAULT_HYPERPARAMS = {
-        "feature_cost": "_optional_",
+        "feature_cost": None,
         "lr": 0.01,
         "lambda_": 0.01,
         "n_iter": 1000,
@@ -97,9 +97,13 @@ class Wachter(RecourseMethod):
     def get_counterfactuals(self, factuals: pd.DataFrame) -> pd.DataFrame:
         factuals = self._mlmodel.get_ordered_features(factuals)
 
-        encoded_feature_names = self._mlmodel.data.encoder.get_feature_names(
-            self._mlmodel.data.categorical
-        )
+        if self._mlmodel.data.categorical:
+            encoded_feature_names = self._mlmodel.data.encoder.get_feature_names(
+                self._mlmodel.data.categorical
+            )
+        else:
+            encoded_feature_names = []
+
         cat_features_indices = [
             factuals.columns.get_loc(feature) for feature in encoded_feature_names
         ]
@@ -109,7 +113,8 @@ class Wachter(RecourseMethod):
                 self._mlmodel.raw_model,
                 x.reshape((1, -1)),
                 cat_features_indices,
-                y_target=self._y_target,
+                # Support only binary classification
+                y_target=1 - self._mlmodel.predict(x.reshape((1, -1))),
                 binary_cat_features=self._binary_cat_features,
                 feature_costs=self._feature_costs,
                 lr=self._lr,
