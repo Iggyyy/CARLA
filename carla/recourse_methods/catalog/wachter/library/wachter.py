@@ -6,11 +6,13 @@ import torch
 import torch.optim as optim
 from torch import nn
 from torch.autograd import Variable
+import logging
 
-from carla import log
 from carla.recourse_methods.processing import reconstruct_encoding_constraints
 
 DECISION_THRESHOLD = 0.5
+
+log = logging.getLogger(__name__)
 
 
 def wachter_recourse(
@@ -86,18 +88,15 @@ def wachter_recourse(
 
     if loss_type == "MSE":
         if len(y_target) != 1:
-            raise ValueError(
-                f"y_target {y_target} is not a single logit score")
+            raise ValueError(f"y_target {y_target} is not a single logit score")
 
         # If logit is above 0.0 we want class 1, else class 0
         target_class = int(y_target[0] > 0.0)
         loss_fn = torch.nn.MSELoss()
     elif loss_type == "BCE":
-
         # If y_target is 1dim make it 2dim
         if len(y_target) == 1:
-            y_target = torch.tensor(
-                [1 - y_target[0], y_target[0]]).float().to(device)
+            y_target = torch.tensor([1 - y_target[0], y_target[0]]).float().to(device)
 
         if y_target[0] + y_target[1] != 1.0:
             raise ValueError(
@@ -163,8 +162,8 @@ def wachter_recourse(
         lamb -= 0.05
 
         if datetime.datetime.now() - t0 > t_max:
-            log.info("Timeout - No Counterfactual Explanation Found")
+            log.debug("Timeout - No Counterfactual Explanation Found")
             break
         elif f_x_new >= 0.5:
-            log.info("Counterfactual Explanation Found")
+            log.debug("Counterfactual Explanation Found")
     return x_new_enc.cpu().detach().numpy().squeeze(axis=0)
